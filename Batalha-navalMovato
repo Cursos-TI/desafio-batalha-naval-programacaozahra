@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+#define TAMANHO_TABULEIRO 10
+#define TAMANHO_NAVIO 3
+#define AGUA 0
+#define NAVIO 3
+
+int main() {
+    int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
+    
+    int navio_horizontal_linha = 2;
+    int navio_horizontal_coluna = 2;
+    
+    if (navio_horizontal_coluna + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+        for (int j = navio_horizontal_coluna; j < navio_horizontal_coluna + TAMANHO_NAVIO; j++) {
+            tabuleiro[navio_horizontal_linha][j] = NAVIO;
+        }
+    }
+    
+    int navio_vertical_linha = 5;
+    int navio_vertical_coluna = 5;
+    
+    if (navio_vertical_linha + TAMANHO_NAVIO <= TAMANHO_TABULEIRO) {
+        for (int i = navio_vertical_linha; i < navio_vertical_linha + TAMANHO_NAVIO; i++) {
+            tabuleiro[i][navio_vertical_coluna] = NAVIO;
+        }
+    }
+    
+    printf("BATALHA NAVAL - NIVEL NOVATO\n");
+    printf("Tabuleiro 10x10 (0 = Agua, 3 = Navio)\n\n");
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
