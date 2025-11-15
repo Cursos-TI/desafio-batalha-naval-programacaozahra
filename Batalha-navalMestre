@@ -1,0 +1,185 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO_TABULEIRO 10
+#define TAMANHO_HABILIDADE 5
+#define AGUA 0
+#define NAVIO 3
+#define HABILIDADE 5
+
+void criarCone(int habilidade[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            if (j >= i && j < TAMANHO_HABILIDADE - i) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+void criarCruz(int habilidade[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    int centro = TAMANHO_HABILIDADE / 2;
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            if (i == centro || j == centro) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+void criarOctaedro(int habilidade[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE]) {
+    int centro = TAMANHO_HABILIDADE / 2;
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            int distancia_vertical = abs(i - centro);
+            int distancia_horizontal = abs(j - centro);
+            if (distancia_vertical + distancia_horizontal <= centro) {
+                habilidade[i][j] = 1;
+            } else {
+                habilidade[i][j] = 0;
+            }
+        }
+    }
+}
+
+void aplicarHabilidade(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO],
+                      int habilidade[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE],
+                      int centro_linha, int centro_coluna) {
+    
+    int offset = TAMANHO_HABILIDADE / 2;
+    
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            int tab_linha = centro_linha - offset + i;
+            int tab_coluna = centro_coluna - offset + j;
+            
+            if (tab_linha >= 0 && tab_linha < TAMANHO_TABULEIRO &&
+                tab_coluna >= 0 && tab_coluna < TAMANHO_TABULEIRO) {
+                
+                if (habilidade[i][j] == 1 && tabuleiro[tab_linha][tab_coluna] != NAVIO) {
+                    tabuleiro[tab_linha][tab_coluna] = HABILIDADE;
+                }
+            }
+        }
+    }
+}
+
+void exibirTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
+    printf("   ");
+    for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+        printf("%2d ", j);
+    }
+    printf("\n");
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        printf("%2d ", i);
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            if (tabuleiro[i][j] == AGUA) {
+                printf(" . ");
+            } else if (tabuleiro[i][j] == NAVIO) {
+                printf(" N ");
+            } else if (tabuleiro[i][j] == HABILIDADE) {
+                printf(" * ");
+            }
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
+    
+    tabuleiro[2][2] = NAVIO;
+    tabuleiro[2][3] = NAVIO;
+    tabuleiro[2][4] = NAVIO;
+    
+    tabuleiro[5][5] = NAVIO;
+    tabuleiro[6][5] = NAVIO;
+    tabuleiro[7][5] = NAVIO;
+    
+    tabuleiro[4][8] = NAVIO;
+    tabuleiro[5][7] = NAVIO;
+    tabuleiro[6][6] = NAVIO;
+    
+    int cone[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+    int cruz[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+    int octaedro[TAMANHO_HABILIDADE][TAMANHO_HABILIDADE];
+    
+    criarCone(cone);
+    criarCruz(cruz);
+    criarOctaedro(octaedro);
+    
+    printf("BATALHA NAVAL - NIVEL MESTRE\n");
+    
+    printf("\nTabuleiro inicial:\n");
+    exibirTabuleiro(tabuleiro);
+    
+    int tabuleiro_temp[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro_temp[i][j] = tabuleiro[i][j];
+        }
+    }
+    
+    printf("\nApos habilidade CONE em (3,3):\n");
+    aplicarHabilidade(tabuleiro_temp, cone, 3, 3);
+    exibirTabuleiro(tabuleiro_temp);
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro_temp[i][j] = tabuleiro[i][j];
+        }
+    }
+    
+    printf("\nApos habilidade CRUZ em (6,6):\n");
+    aplicarHabilidade(tabuleiro_temp, cruz, 6, 6);
+    exibirTabuleiro(tabuleiro_temp);
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro_temp[i][j] = tabuleiro[i][j];
+        }
+    }
+    
+    printf("\nApos habilidade OCTAEDRO em (4,4):\n");
+    aplicarHabilidade(tabuleiro_temp, octaedro, 4, 4);
+    exibirTabuleiro(tabuleiro_temp);
+    
+    printf("\nMatriz CONE:\n");
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            printf("%d ", cone[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("\nMatriz CRUZ:\n");
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            printf("%d ", cruz[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("\nMatriz OCTAEDRO:\n");
+    for (int i = 0; i < TAMANHO_HABILIDADE; i++) {
+        for (int j = 0; j < TAMANHO_HABILIDADE; j++) {
+            printf("%d ", octaedro[i][j]);
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
