@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO_TABULEIRO 10
+#define TAMANHO_NAVIO 3
+#define AGUA 0
+#define NAVIO 3
+
+int verificarSobreposicao(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], 
+                         int linha, int coluna, int orientacao, int direcao_diagonal) {
+    
+    for (int k = 0; k < TAMANHO_NAVIO; k++) {
+        int pos_linha = linha;
+        int pos_coluna = coluna;
+        
+        if (orientacao == 0) {
+            pos_coluna = coluna + k;
+        } else if (orientacao == 1) {
+            pos_linha = linha + k;
+        } else if (orientacao == 2) {
+            if (direcao_diagonal == 0) {
+                pos_linha = linha + k;
+                pos_coluna = coluna + k;
+            } else {
+                pos_linha = linha + k;
+                pos_coluna = coluna - k;
+            }
+        }
+        
+        if (pos_linha < 0 || pos_linha >= TAMANHO_TABULEIRO || 
+            pos_coluna < 0 || pos_coluna >= TAMANHO_TABULEIRO) {
+            return 0;
+        }
+        
+        if (tabuleiro[pos_linha][pos_coluna] == NAVIO) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void posicionarNavio(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], 
+                    int linha, int coluna, int orientacao, int direcao_diagonal) {
+    
+    for (int k = 0; k < TAMANHO_NAVIO; k++) {
+        int pos_linha = linha;
+        int pos_coluna = coluna;
+        
+        if (orientacao == 0) {
+            pos_coluna = coluna + k;
+        } else if (orientacao == 1) {
+            pos_linha = linha + k;
+        } else if (orientacao == 2) {
+            if (direcao_diagonal == 0) {
+                pos_linha = linha + k;
+                pos_coluna = coluna + k;
+            } else {
+                pos_linha = linha + k;
+                pos_coluna = coluna - k;
+            }
+        }
+        
+        tabuleiro[pos_linha][pos_coluna] = NAVIO;
+    }
+}
+
+int main() {
+    int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            tabuleiro[i][j] = AGUA;
+        }
+    }
+    
+    if (verificarSobreposicao(tabuleiro, 2, 2, 0, 0)) {
+        posicionarNavio(tabuleiro, 2, 2, 0, 0);
+    }
+    
+    if (verificarSobreposicao(tabuleiro, 5, 5, 1, 0)) {
+        posicionarNavio(tabuleiro, 5, 5, 1, 0);
+    }
+    
+    if (verificarSobreposicao(tabuleiro, 1, 1, 2, 0)) {
+        posicionarNavio(tabuleiro, 1, 1, 2, 0);
+    }
+    
+    if (verificarSobreposicao(tabuleiro, 3, 7, 2, 1)) {
+        posicionarNavio(tabuleiro, 3, 7, 2, 1);
+    }
+    
+    printf("BATALHA NAVAL - NIVEL AVENTUREIRO\n");
+    printf("Tabuleiro 10x10 (0 = Agua, 3 = Navio)\n\n");
+    
+    printf("   ");
+    for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+        printf("%2d ", j);
+    }
+    printf("\n");
+    
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
+        printf("%2d ", i);
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
+            printf("%2d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
